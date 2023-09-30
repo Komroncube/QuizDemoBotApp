@@ -143,7 +143,7 @@ namespace QuizBotDemo
             await Console.Out.WriteLineAsync((char)(0 + question.AnswerKey.ToCharArray()[0]));
             try
             {
-                IEnumerable<MessageEntity> entities = new[]
+                IEnumerable<MessageEntity>? entities = new[]
                     {
                         new MessageEntity()
                         {
@@ -153,7 +153,7 @@ namespace QuizBotDemo
                                 FirstName = from.FirstName,
 
                             }
-                        }
+                        },
                     };
                 Message poll = await botClient.SendPollAsync(
                     chatId: from.Id,
