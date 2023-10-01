@@ -143,10 +143,13 @@ namespace QuizBotDemo
             await Console.Out.WriteLineAsync((char)(0 + question.AnswerKey.ToCharArray()[0]));
             try
             {
-                IEnumerable<MessageEntity>? entities = new[]
+                IEnumerable<MessageEntity>? entities = new Collection<MessageEntity>()
                     {
                         new MessageEntity()
                         {
+                            Type = MessageEntityType.Bold,
+                            Length = 0,
+                            Offset = 0,
                             User = new User()
                             {
                                 Id = from.Id,
@@ -164,6 +167,7 @@ namespace QuizBotDemo
                     isAnonymous: true,
                     type: PollType.Quiz,
                     explanationEntities:entities,
+                    explanationParseMode: ParseMode.Markdown,
                     openPeriod:30,
                     cancellationToken: cancellationToken
                     );
@@ -192,17 +196,7 @@ namespace QuizBotDemo
         
         private static async Task HandlePollAsync(ITelegramBotClient botClient, Poll? poll, CancellationToken cancellationToken)
         {
-            long chatId = 0;
-            return;
-            foreach (var item in poll.ExplanationEntities)
-            {
-                chatId = item.User.Id;
-                break;
-            }
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text:"Keyingi savolni ko'rish uchun /next buyrug'ini bosing", 
-                cancellationToken:cancellationToken);
+            long chatId = poll.
 
         }
         private static async Task HandlePollAnswerAsync(ITelegramBotClient botClient, PollAnswer? pollAnswer, CancellationToken cancellationToken)
