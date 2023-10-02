@@ -119,10 +119,25 @@ namespace QuizBotDemo
                     await SendQuizAsync(botClient, message.From, cancellationToken);
                 }
             }
+            else if(messageText=="/stop")
+            {
+                subject = "";
+                await botClient.SendTextMessageAsync(
+                        chatId: chatId,
+                        text:"test to'xtatildi",
+                        cancellationToken: cancellationToken);
+            }
+
             else
             {
+                await botClient.SendTextMessageAsync(
+                    chatId: chatId,
+                    text: "You send:\n" +
+                    $"{messageText}",
+                    cancellationToken: cancellationToken);
                 await Console.Out.WriteLineAsync($"from {message.From.FirstName} received: {messageText}");
             }
+
 
         }
 
@@ -164,9 +179,10 @@ namespace QuizBotDemo
                     options: question.options,
                     correctOptionId: question.answerkey,
                     //correctOptionId:,
-                    isAnonymous: true,
+                    isAnonymous: false,
                     type: PollType.Quiz,
                     explanationEntities:entities,
+                 
                     explanationParseMode: ParseMode.Markdown,
                     openPeriod:30,
                     cancellationToken: cancellationToken
@@ -196,17 +212,18 @@ namespace QuizBotDemo
         
         private static async Task HandlePollAsync(ITelegramBotClient botClient, Poll? poll, CancellationToken cancellationToken)
         {
-            long chatId = poll.
+            
 
         }
         private static async Task HandlePollAnswerAsync(ITelegramBotClient botClient, PollAnswer? pollAnswer, CancellationToken cancellationToken)
         {
             
-            await botClient.SendTextMessageAsync(
+            await SendQuizAsync(botClient, pollAnswer.User, cancellationToken);
+            /*await botClient.SendTextMessageAsync(
                 chatId: pollAnswer.User.Id,
                 text: "javob qabul qilindi",
                 cancellationToken:cancellationToken);
-            //await botClient.StopPollAsync(chatId: pollAnswer.User.Id, messageId:Poll.MessageId);
+            //await botClient.StopPollAsync(chatId: pollAnswer.User.Id, messageId:Poll.MessageId);*/
 
         }
 
