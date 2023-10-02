@@ -12,7 +12,7 @@ namespace QuizBotDemo
     {
         static bool isQuiz = false;
         static QuizService quizService;
-        static string subject;
+        static string subject = "";
 
 
         private static async Task Main(string[] args)
@@ -84,10 +84,22 @@ namespace QuizBotDemo
 
             if (messageText == "/start")
             {
+                KeyboardButton btn = KeyboardButton.WithRequestContact("Kontack ulashish");
+                var contact_keyboard = new KeyboardButton("Lokatsiya jo'natish") {
+                        RequestLocation = true,
+                };
+                KeyboardButton poll = KeyboardButton.WithRequestPoll("Poll jo'nating");
+                
+                var reply = new ReplyKeyboardMarkup(new[]
+                {
+                    btn, contact_keyboard, poll
+                });
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
-                    text: $"Assalomu alaykum <b>{message.From.FirstName} {message.From.LastName}</b>",
+                    text: $"Assalomu alaykum <b>{message.From.FirstName} {message.From.LastName}</b>\n" +
+                    $"<a href =\"https://rb.gy/7zewl\">uzb flag</a>",
                     parseMode: ParseMode.Html,
+                    replyMarkup:reply,
                     cancellationToken: cancellationToken
                 );
 
@@ -116,7 +128,15 @@ namespace QuizBotDemo
                 }
                 else
                 {
-                    await SendQuizAsync(botClient, message.From, cancellationToken);
+                    try
+                    {
+                        await SendQuizAsync(botClient, message.From, cancellationToken);
+
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
             }
             else if(messageText=="/stop")
@@ -126,14 +146,15 @@ namespace QuizBotDemo
                         chatId: chatId,
                         text:"test to'xtatildi",
                         cancellationToken: cancellationToken);
+                isQuiz = false;
             }
-
             else
             {
                 await botClient.SendTextMessageAsync(
                     chatId: chatId,
                     text: "You send:\n" +
                     $"{messageText}",
+                    replyMarkup:null,
                     cancellationToken: cancellationToken);
                 await Console.Out.WriteLineAsync($"from {message.From.FirstName} received: {messageText}");
             }
@@ -147,7 +168,14 @@ namespace QuizBotDemo
             {
                 
                 subject = callbackQuery.Data;
-                await SendQuizAsync(botClient, callbackQuery.From, cancellationToken);
+                try
+                {
+                    await SendQuizAsync(botClient, callbackQuery.From, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 
             }
         }
@@ -179,7 +207,7 @@ namespace QuizBotDemo
                     options: question.options,
                     correctOptionId: question.answerkey,
                     //correctOptionId:,
-                    isAnonymous: false,
+                    isAnonymous: true,
                     type: PollType.Quiz,
                     explanationEntities:entities,
                  
@@ -217,7 +245,6 @@ namespace QuizBotDemo
         }
         private static async Task HandlePollAnswerAsync(ITelegramBotClient botClient, PollAnswer? pollAnswer, CancellationToken cancellationToken)
         {
-            
             await SendQuizAsync(botClient, pollAnswer.User, cancellationToken);
             /*await botClient.SendTextMessageAsync(
                 chatId: pollAnswer.User.Id,
