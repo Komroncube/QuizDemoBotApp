@@ -1,4 +1,5 @@
-﻿using QuizDemoBot.Models;
+﻿using Microsoft.Extensions.Configuration;
+using QuizDemoBot.Models;
 using System.Collections.ObjectModel;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -17,7 +18,9 @@ namespace QuizBotDemo
 
         private static async Task Main(string[] args)
         {
-            const string TOKEN = "6400830881:AAHw-p-nQg-E2YafSqX-SRbQ6KvrwklS1eM";
+            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+            string TOKEN = configuration["TelegramToken"];
             var botClient = new TelegramBotClient(TOKEN);
             using CancellationTokenSource cts = new CancellationTokenSource();
             ReceiverOptions receiverOptions = new ReceiverOptions()
