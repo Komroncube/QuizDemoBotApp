@@ -18,7 +18,7 @@ namespace QuizBotDemo
 
         private static async Task Main(string[] args)
         {
-            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("D:\\KOMRON\\Najot_ta'lim\\dot_net\\homework\\4-oy\\QuizBotApp\\QuizDemoBotApp\\config\\appsettings.json").Build();
 
             string TOKEN = configuration["TelegramToken"];
             var botClient = new TelegramBotClient(TOKEN);
